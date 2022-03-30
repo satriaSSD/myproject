@@ -43,5 +43,7 @@ namespace MyProject.Web.Models.Account
                 }
             }
         }
+
+        public string TokenKey { get; set; }
     }
 }

@@ -45,6 +45,14 @@ namespace MyProject.Web.Startup
                         icon: "fas fa-theater-masks",
                         permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
                             )
+                ).AddItem(
+                    new MenuItemDefinition(
+                        PageNames.Contacts,
+                        L("Contacts"),
+                        url: "Contact",
+                        icon: "fas fa-users",
+                        permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Contact)
+                            )
                 )
                 .AddItem(
                     new MenuItemDefinition(

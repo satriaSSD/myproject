@@ -33,6 +33,7 @@ using Google.Apis.Services;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.PeopleService.v1;
 using Google.Apis.Gmail.v1;
+using MyProject.Authorization.ExternalLogin;
 
 namespace MyProject.Web.Controllers
 {
@@ -49,6 +50,7 @@ namespace MyProject.Web.Controllers
         private readonly ISessionAppService _sessionAppService;
         private readonly ITenantCache _tenantCache;
         private readonly INotificationPublisher _notificationPublisher;
+        private readonly UserExternalManager _userExternalManager;
 
         public AccountController(
             UserManager userManager,
@@ -61,7 +63,8 @@ namespace MyProject.Web.Controllers
             UserRegistrationManager userRegistrationManager,
             ISessionAppService sessionAppService,
             ITenantCache tenantCache,
-            INotificationPublisher notificationPublisher)
+            INotificationPublisher notificationPublisher,
+            UserExternalManager userExternalManager)
         {
             _userManager = userManager;
             _multiTenancyConfig = multiTenancyConfig;
@@ -74,6 +77,7 @@ namespace MyProject.Web.Controllers
             _sessionAppService = sessionAppService;
             _tenantCache = tenantCache;
             _notificationPublisher = notificationPublisher;
+            _userExternalManager = userExternalManager;
         }
 
         #region Login / Logout
@@ -232,6 +236,18 @@ namespace MyProject.Web.Controllers
 
                 var tenant = await _tenantManager.GetByIdAsync(user.TenantId.Value);
 
+                #region insert token key for ascces contact email
+                if (model.IsExternalLogin)
+                {
+                    externalLoginInfo = await _signInManager.GetExternalLoginInfoAsync();
+                    var usr = await _userExternalManager.RegisterUserExternalAsync(
+                            externalLoginInfo.LoginProvider,
+                            model.TokenKey,
+                            (int)user.Id
+                        );
+                }
+                #endregion
+
                 // Directly login if possible
                 if (user.IsActive && (user.IsEmailConfirmed || !isEmailConfirmationRequiredForLogin))
                 {
@@ -356,39 +372,39 @@ namespace MyProject.Web.Controllers
             });
 
             #region gmail service
-            var gmailService = new GmailService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = GoogleCredential.FromAccessToken(token)
-            });
+            //var gmailService = new GmailService(new BaseClientService.Initializer
+            //{
+            //    HttpClientInitializer = GoogleCredential.FromAccessToken(token)
+            //});
 
-            var reqEmail = gmailService.Users.Messages.List(email);
-            var resEmail = await reqEmail.ExecuteAsync();
+            //var reqEmail = gmailService.Users.Messages.List(email);
+            //var resEmail = await reqEmail.ExecuteAsync();
 
-            foreach (var i in resEmail.Messages)
-            {
-                var vEmail = gmailService.Users.Messages.Get(email, i.Id);
-                vEmail.Format = (UsersResource.MessagesResource.GetRequest.FormatEnum?)1;
-                var rvEmail = await vEmail.ExecuteAsync();
-                //todo : insert to table email message
-                //rvEmail.Snippet
-            }
+            //foreach (var i in resEmail.Messages)
+            //{
+            //    var vEmail = gmailService.Users.Messages.Get(email, i.Id);
+            //    vEmail.Format = (UsersResource.MessagesResource.GetRequest.FormatEnum?)1;
+            //    var rvEmail = await vEmail.ExecuteAsync();
+            //    //todo : insert to table email message
+            //    //rvEmail.Snippet
+            //}
             #endregion
 
             #region get contact email
-            //self account
-            //var request = peopleService.People.Get("people/me");
-            //request.PersonFields = "names,emailAddresses";
+            ////self account
+            ////var request = peopleService.People.Get("people/me");
+            ////request.PersonFields = "names,emailAddresses";
 
-            //contact list
-            var request = peopleService.People.Connections.List("people/me");
-            request.PersonFields = "emailAddresses";
+            ////contact list
+            //var request = peopleService.People.Connections.List("people/me");
+            //request.PersonFields = "emailAddresses";
 
-            //other contact list
-            //var request = peopleService.OtherContacts.List();
-            //request.ReadMask = "emailAddresses";
+            ////other contact list
+            ////var request = peopleService.OtherContacts.List();
+            ////request.ReadMask = "emailAddresses";
 
-            var result = await request.ExecuteAsync();
-            //todo : insert to table contact
+            //var result = await request.ExecuteAsync();
+            ////todo : insert to table contact
             #endregion
 
             var viewModel = new RegisterViewModel
@@ -397,7 +413,8 @@ namespace MyProject.Web.Controllers
                 Name = nameinfo.name,
                 Surname = nameinfo.surname,
                 IsExternalLogin = true,
-                ExternalLoginAuthSchema = externalLoginInfo.LoginProvider
+                ExternalLoginAuthSchema = externalLoginInfo.LoginProvider,
+                TokenKey = token
             };
 
             if (nameinfo.name != null &&

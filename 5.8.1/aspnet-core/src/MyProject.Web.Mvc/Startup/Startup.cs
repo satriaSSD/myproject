@@ -59,23 +59,13 @@ namespace MyProject.Web.Startup
             AuthConfigurer.Configure(services, _appConfiguration);
 
             services.AddAuthentication(
-                opt =>
-            {
-                opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-
-                //// This forces challenge results to be handled by Google OpenID Handler, so there's no
-                //// need to add an AccountController that emits challenges for Login.
-                //opt.DefaultChallengeScheme = GoogleOpenIdConnectDefaults.AuthenticationScheme;
-                //// This forces forbid results to be handled by Google OpenID Handler, which checks if
-                //// extra scopes are required and does automatic incremental auth.
-                //opt.DefaultForbidScheme = GoogleOpenIdConnectDefaults.AuthenticationScheme;
-                //// Default scheme that will handle everything else.
-                //// Once a user is authenticated, the OAuth2 token info is stored in cookies.
-                //opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-                .AddCookie()
-                .AddGoogle(GoogleDefaults.AuthenticationScheme, opt =>
+            //    opt =>
+            //{
+            //    opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    opt.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            //})
+            //    .AddCookie()
+            )    .AddGoogle(GoogleDefaults.AuthenticationScheme, opt =>
             {
                 opt.ClientId = "914548600456-ckacejls56ov4vo4mhpsq5jto4dos0ak.apps.googleusercontent.com";
                 opt.ClientSecret = "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";
