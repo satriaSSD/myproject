@@ -67,8 +67,8 @@ namespace MyProject.Web.Startup
             //    .AddCookie()
             )    .AddGoogle(GoogleDefaults.AuthenticationScheme, opt =>
             {
-                opt.ClientId = "914548600456-ckacejls56ov4vo4mhpsq5jto4dos0ak.apps.googleusercontent.com";
-                opt.ClientSecret = "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";
+                opt.ClientId = "apps.googleusercontent.com";
+                opt.ClientSecret = "";
                 opt.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
                 opt.Scope.Add("https://www.googleapis.com/auth/contacts");
                 opt.Scope.Add("https://www.googleapis.com/auth/contacts.readonly");
