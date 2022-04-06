@@ -32,6 +32,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.447" />
+    <PackageReference Include="ChatApi.Core" Version="1.0.1" />
+    <PackageReference Include="ChatApi.Instances" Version="1.0.1" />
+    <PackageReference Include="ChatApi.WA.Account" Version="1.0.1" />
+    <PackageReference Include="ChatApi.WA.Ban" Version="1.0.1" />
+    <PackageReference Include="ChatApi.WA.Dialogs" Version="1.0.1" />
+    <PackageReference Include="ChatApi.WA.Messages" Version="1.0.1" />
+    <PackageReference Include="ChatApi.WA.Queues" Version="1.0.1" />
     <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.57.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2601" />
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.57.0.2622" />
@@ -47,6 +54,7 @@
     <PackageReference Include="Abp.HangFire" Version="5.13.0" />
     <PackageReference Include="Abp.RedisCache" Version="5.13.0" />
     <PackageReference Include="Abp.Castle.Log4Net" Version="5.13.0" />
+    <PackageReference Include="QRCoder" Version="1.4.3" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\libs\" />
